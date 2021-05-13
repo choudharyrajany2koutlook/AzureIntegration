@@ -1,0 +1,82 @@
+
+
+
+***Preparatory
+1. Install Git for Windows - 
+2. Open Visual Studio Code -
+3. Open the bash terminal
+4. Login to Git via VS Code (VS knows your Git account)
+5. Clone the app from repository - 
+git clone https://github.com/Azure-Samples/azure-voting-app-redis.git
+
+***Build the image
+1. Open foler azure-voting-app-redis from "C:\Users\Administrator" folder
+2. Build the docker image with 
+    docker compose up -d
+    
+3. docker image ls
+4. docker container ls
+5. browse the application : Navigate to http://localhost:8080
+
+
+*****************Push  to a custom Azure Container Registry*******
+
+1. Install AZure CLI
+https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-windows?tabs=azure-cli
+2. 
+
+2. Login into Azure
+az login 
+
+*****creating a Azure Resource Group************
+
+az group create --name myResourceGroup --location eastus
+
+****create the container registry****************
+
+
+az acr create --resource-group myResourceGroup --name <yourname> --sku Basic
+
+az acr login --name sriniiyer
+
+docker images
+
+//get the login server address
+
+az acr list --resource-group myResourceGroup --query "[].{acrLoginServer:loginServer}" --output table
+
+**Retage the image to your registry
+
+docker tag mcr.microsoft.com/azuredocs/azure-vote-front:v1 sriniiyer.azurecr.io/azure-vote-front:v1 
+
+**--Push to Azure Container Registry
+
+docker push sriniiyer.azurecr.io/azure-vote-front:v1 
+
+**Get a list of images from the registry
+az acr repository list --name sriniiyer --output table
+**Get a list of tages for the image
+az acr repository show-tags --name <reponame> --repository azure-vote-front --output table
+
+********************CREATING AN AZURE Kubernetes Cluster with 2 nodes****
+for bash
+az aks create \
+    --resource-group myResourceGroup \
+    --name myAKSCluster \
+    --node-count 2 \
+    --generate-ssh-keys \
+    --attach-acr rajanchoudhary
+for PS
+az aks create `
+    --resource-group myResourceGroup `
+    --name myAKSCluster `
+    --node-count 2 `
+    --generate-ssh-keys `
+    --attach-acr rajanchoudhary
+
+
+
+
+
+
+
