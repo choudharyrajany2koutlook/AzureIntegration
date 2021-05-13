@@ -51,7 +51,7 @@ docker tag mcr.microsoft.com/azuredocs/azure-vote-front:v1 sriniiyer.azurecr.io/
 
 **--Push to Azure Container Registry
 
-docker push sriniiyer.azurecr.io/azure-vote-front:v1 
+docker push rajanchoudhary.azurecr.io/azure-vote-front:v1 
 
 **Get a list of images from the registry
 az acr repository list --name sriniiyer --output table
@@ -73,6 +73,41 @@ az aks create `
     --node-count 2 `
     --generate-ssh-keys `
     --attach-acr rajanchoudhary
+
+**INSTALL the AZURE Kubernetes CLI
+az aks install-cli
+
+**Connect to Kuebernetes Cluster
+az aks get-credentials --resource-group myResourceGroup --name myAKSCluster
+
+**List the nodes in the cluster
+kubectl get nodes
+
+**Deploy to AKS Cluster
+kubectl apply -f azure-vote-all-in-one-redis.yaml 
+
+
+**Test the deployment
+kubectl get service azure-vote-front --watch
+
+**Manual Scaling of pods
+kubectl get pod
+kubectl scale --replicas=5 deployment/azure-vote-front
+kubectl get pod
+kubectl scale --replicas=5 deployment/azure-vote-back
+kubectl get pod
+
+**Auto Scaling
+kubectl autoscale deployment azure-vote-front --cpu-percent=50 --min=3 --max=10
+
+**Retag Image for Azure Container Repository
+
+docker tag mcr.microsoft.com/azuredocs/azure-vote-front:v2  sriniiyer.azurecr.io/azure-vote-front:v2
+
+docker push sriniiyer.azurecr.io/azure-vote-front:v2 
+
+
+kubectl set image deployment azure-vote-front azure-vote-front=sriniiyer.azurecr.io/azure-vote-front:v2
 
 
 
